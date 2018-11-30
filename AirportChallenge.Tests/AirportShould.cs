@@ -10,8 +10,10 @@ namespace AirportChallenge.Tests
         [Fact]
         public void InstructPlaneToLand()
         {
-            Mock<Weather> weather = new Mock<Weather>();
-            weather.Setup(x => x.isStormy()).Returns(false);
+            Mock<IWeather> weather = new Mock<IWeather>();
+            weather.Setup(x => x.IsStormy()).Returns(false);
+            
+
             Airport airport = new Airport(weather.Object);
             Mock<Plane> plane = new Mock<Plane>();
             airport.land(plane.Object);
@@ -21,8 +23,9 @@ namespace AirportChallenge.Tests
         [Fact]
         public void InstructPlaneToTakeOff()
         {
-            Mock<Weather> weather = new Mock<Weather>();
-            weather.Setup(x => x.isStormy()).Returns(false);
+            Mock<IWeather> weather = new Mock<IWeather>();
+            weather.Setup(x => x.IsStormy()).Returns(false);
+           
             Airport airport = new Airport(weather.Object);
             Mock<Plane> plane = new Mock<Plane>();
             airport.land(plane.Object);
@@ -35,17 +38,22 @@ namespace AirportChallenge.Tests
         {
            
             Mock<Plane> plane = new Mock<Plane>();
-
-            Mock<Weather> weather = new Mock<Weather>();
-           weather.Setup(x => x.isStormy()).Returns(true);
+            Mock<IWeather> weather = new Mock<IWeather>();
             Airport airport = new Airport(weather.Object);
-
+            weather.Setup(x => x.IsStormy()).Returns(false);
+        
+            
             airport.land(plane.Object);
 
-            airport.TakeOff(plane.Object);
+            weather.Setup(x => x.IsStormy()).Returns(true);
+
+          
             Assert.Contains(plane.Object, airport.hanger);
           //  Assert.Equal("is stormy", airport.TakeOff(plane.Object));
-            //Assert.Throws<ArgumentException>(() => airport.TakeOff(plane.Object));
+           Assert.Throws<InvalidOperationException>(() => airport.TakeOff(plane.Object));
+            var ex = Assert.Throws<InvalidOperationException>(() => airport.TakeOff(plane.Object));
+            Assert.Equal("Weather is bad, can not take off.", ex.Message);
+
         }
     }
 }

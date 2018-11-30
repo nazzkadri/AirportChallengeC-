@@ -6,25 +6,34 @@ namespace AirportChallengeCSharp
     public class Airport
     {
         public List<Plane> hanger;
-        public Weather weather;
+        private readonly IWeather _weather;
 
 
-        public Airport(Weather weatherObj)
+        public Airport(IWeather weatherObj)
         {
-            weather = weatherObj;
+            _weather = weatherObj;
             hanger = new List<Plane>();
         }
         public void land(Plane plane)
         {
-            hanger.Add(plane);
+
+            if (_weather.IsStormy())
+            {
+                throw new InvalidOperationException("Weather is bad, can not land.");
+                //return "is stormy";
+            }
+            else
+            {
+                hanger.Add(plane);
+            }
         }
 
         public String TakeOff(Plane plane)
         {
-            if (weather.isStormy())
+            if (_weather.IsStormy())
             {
-                //throw new Exception("Weather is bad, can not take off.");
-                return "is stormy";
+                throw new InvalidOperationException("Weather is bad, can not take off.");
+                //return "is stormy";
             } else
             {
                 hanger.Remove(plane);

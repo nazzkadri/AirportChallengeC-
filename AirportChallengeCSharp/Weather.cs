@@ -4,11 +4,11 @@ using System.Text;
 
 namespace AirportChallengeCSharp
 {
-    public class Weather
+    public class Weather : IWeather
     {
         //public Boolean Stormy = false;
 
-        public virtual Boolean isStormy()
+        public Boolean IsStormy()
         {
             return false;
         }
